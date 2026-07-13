@@ -1,6 +1,7 @@
 # Agent Skills for FeedbackBasket
 
-Agent skills for feedback management — projects, bugs, feature requests, widgets, and team.
+Agent skills for feedback management — projects, bugs, feature requests,
+website and mobile conversations, widgets, and team.
 
 ```bash
 npx skills add deifos/feedbackbasket-skills
@@ -12,7 +13,7 @@ See [install.md](install.md) for full setup instructions including CLI authentic
 
 | Skill | Description |
 |-------|-------------|
-| **feedbackbasket** | Full FeedbackBasket CLI integration — projects, feedback, bugs, widgets, export, team, and more |
+| **feedbackbasket** | Full FeedbackBasket CLI integration — projects, threaded replies, mobile setup, widgets, export, team, and more |
 
 ## Requirements
 
