@@ -46,6 +46,7 @@ feedbackbasket projects list
 feedbackbasket projects show <name-or-id>
 feedbackbasket projects create "My App" --url https://myapp.com --description "..."
 feedbackbasket projects update <name-or-id> --name "New Name" --url <url> --description "..."
+feedbackbasket projects update <name-or-id> --reply-to vlad@example.com  # default reply-to for feedback replies
 feedbackbasket projects delete <name-or-id> --yes
 ```
 
@@ -64,6 +65,11 @@ feedbackbasket feedback update <id> --status PLANNED --category BUG --sentiment 
 feedbackbasket feedback note <id> "Investigating — appears related to auth flow"
 feedbackbasket feedback delete <id> --yes
 feedbackbasket feedback bulk-update --status CLOSED --ids id1,id2,id3
+
+# Reply to submitter via email
+feedbackbasket feedback reply <id> "Thanks for reporting — we pushed a fix!"
+feedbackbasket feedback reply <id> "<content>" --reply-to vlad@example.com  # override reply-to
+feedbackbasket feedback replies <id>                                          # list past replies
 
 # Export
 feedbackbasket feedback export <project> --format csv
@@ -128,6 +134,21 @@ feedbackbasket bugs list --severity high --agent
 feedbackbasket feedback show <id> --agent
 # Response includes browser, OS, page URL, AI analysis, priority score
 ```
+
+### Close the loop — reply to the submitter
+```bash
+# Agent reads context, drafts its own reply, sends it
+feedbackbasket feedback show <id> --agent                    # read context + project.replyToEmail
+feedbackbasket feedback reply <id> "<drafted response>" --agent
+feedbackbasket feedback update <id> --status COMPLETE --agent
+feedbackbasket feedback note <id> "Replied via CLI" --agent
+```
+**Important:** If `feedback show` returns `project.replyToEmail: null`, the agent MUST either:
+1. Pass `--reply-to <email>` with an explicit address, OR
+2. Ask the human which reply-to email to use (the account owner's email is a reasonable default, but requires user confirmation), OR
+3. Set a project default first: `feedbackbasket projects update <project> --reply-to <email>`
+
+Never silently guess a reply-to address — it becomes the "From" address the customer sees.
 
 ### Export for analysis
 ```bash
