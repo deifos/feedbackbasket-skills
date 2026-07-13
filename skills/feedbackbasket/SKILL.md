@@ -1,6 +1,6 @@
 ---
 name: FeedbackBasket
-description: Manage FeedbackBasket projects, feedback, bugs, widgets, and team from the command line
+description: Manage FeedbackBasket projects, feedback, bugs, website widgets, mobile app feedback, waitlists, and teams from the command line. Use whenever an agent needs to configure FeedbackBasket in a web or mobile app, install its Swift SDK or hosted mobile form, collect feedback, or manage a FeedbackBasket project.
 triggers:
   - feedbackbasket
   - feedback
@@ -9,6 +9,9 @@ triggers:
   - user feedback
   - widget
   - feedback widget
+  - mobile feedback
+  - ios feedback
+  - swift sdk
 invocable: true
 argument-hint: "<command> [options]"
 ---
@@ -51,6 +54,55 @@ feedbackbasket projects delete <name-or-id> --yes
 ```
 
 All project commands accept **name or ID**. Names are matched case-insensitively with fuzzy suggestions on typos.
+
+### Mobile App Feedback
+
+Resolve the project for the current app before changing mobile configuration. Prefer a clearly matching project name or product URL. If multiple projects are plausible, ask the user which one to use. If none exists, confirm a real product, support, marketing, or App Store URL before creating it; never invent a public URL or use a local development address.
+
+```bash
+feedbackbasket mobile status <project> --agent
+feedbackbasket mobile setup <project> --bundle-id com.example.app --agent
+feedbackbasket mobile setup <project> --bundle-id com.example.app --include-publishable-key --agent
+feedbackbasket mobile bundle-ids <project> --add com.example.app.beta --agent
+feedbackbasket mobile bundle-ids <project> --remove com.example.app.beta --agent
+feedbackbasket mobile verify <project> --bundle-id com.example.app --wait 120 --agent
+feedbackbasket mobile disable <project> --yes --agent
+feedbackbasket mobile rotate-key <project> --yes --include-publishable-key --agent
+```
+
+The `fb_mobile_` value is a publishable, write-only project identifier designed to ship in the app. It cannot read feedback or administer the project, but the CLI masks it by default to reduce accidental disclosure. Use `--include-publishable-key` only while performing a setup the user authorized, and never repeat the full key in the final response.
+
+Never place an `fb_cli_` CLI token or `fb_key_` MCP/API key in app source, build settings, prompts, logs, generated configuration, or final responses. Those are private credentials and are not interchangeable with the mobile project key.
+
+For SwiftUI apps targeting iOS 16 or later, use the Swift package returned by `mobile setup`. For UIKit, use the package API or host its SwiftUI sheet. For React Native, Flutter, or unsupported stacks, open the returned hosted form in the app's existing in-app browser when available.
+
+Configure the Swift package once at app startup with the publishable key returned by `mobile setup`:
+
+```swift
+import FeedbackBasket
+
+FeedbackBasket.configure(
+    projectKey: "fb_mobile_returned_by_mobile_setup"
+)
+```
+
+Present the standard SwiftUI sheet from the selected Settings, Help, or Support view:
+
+```swift
+@State private var showingFeedback = false
+
+Button("Send feedback") {
+    showingFeedback = true
+}
+.feedbackBasketSheet(
+    isPresented: $showingFeedback,
+    context: ["screen": "Settings"]
+)
+```
+
+Add an accessible Send feedback action to an existing Settings, Help, or Support screen and attach only non-sensitive context. Do not add crash reporting, automatic logs, analytics, or session recording. Treat the key as production unless the user confirms staging details; build and launch the app, then use `mobile verify` without submitting production test feedback.
+
+Setup is idempotent and bundle ID additions preserve existing entries. Do not disable mobile feedback or rotate its key unless the user explicitly requests and confirms the disruptive action. Rotation stops every released build using the previous key.
 
 ### Feedback
 ```bash
