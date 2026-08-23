@@ -1,0 +1,7 @@
+{
+  "name": "feedbackbasket-skills",
+  "private": true,
+  "scripts": {
+    "test": "node scripts/validate-evals.mjs"
+  }
+}
