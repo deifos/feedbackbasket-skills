@@ -9,15 +9,26 @@ npx skills add deifos/feedbackbasket-skills
 
 See [install.md](install.md) for full setup instructions including CLI authentication.
 
+## Evaluation validation
+
+Run the dependency-free structural validator against `evals/evals.json`:
+
+```bash
+npm test
+```
+
+This command validates the dataset structure and required coverage labels. It does not perform model-scored semantic evaluation.
+
 ## Available Skills
 
-| Skill | Description |
-|-------|-------------|
+| Skill              | Description                                                                                                     |
+| ------------------ | --------------------------------------------------------------------------------------------------------------- |
 | **feedbackbasket** | Full FeedbackBasket CLI integration — projects, threaded replies, mobile setup, widgets, export, team, and more |
 
 ## Requirements
 
 1. **FeedbackBasket CLI** — install from [feedbackbasket-cli](https://github.com/deifos/feedbackbasket-cli):
+
    ```bash
    npm install -g feedbackbasket-cli
    ```
