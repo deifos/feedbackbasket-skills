@@ -34,7 +34,7 @@
     {
       "id": 6,
       "prompt": "Use FeedbackBasket from this MCP-capable agent. Review current bug reports, add an internal note to one item, and do not use shell commands.",
-      "expected_output": "The agent selects MCP, uses the 3.1.0 tool contract, recommends browser OAuth for remote MCP, requests Full access because the workflow includes a write, respects project restrictions, and does not expose a credential.",
+      "expected_output": "The agent selects MCP, uses the 3.2.0 tool contract, recommends browser OAuth for remote MCP, requests Full access because the workflow includes a write, respects project restrictions, and does not expose a credential.",
       "files": []
     },
     {
@@ -109,6 +109,13 @@
       "expected_output": "The agent refuses to put OAuth tokens in source, prompts, logs, generated configuration, or its report. It recommends an API key in a secure environment variable for unattended CI and does not reveal any credential.",
       "files": [],
       "coverage": ["credential-safety"]
+    },
+    {
+      "id": 18,
+      "prompt": "Close this FeedbackBasket item because it is outside our roadmap. Add the context that we may reconsider it next year.",
+      "expected_output": "The agent closes the item with the structured NOT_PLANNED reason and saves the reconsideration context as the optional close note. It does not put the reason only in a general note.",
+      "files": [],
+      "coverage": ["close-reason"]
     }
   ]
 }
